@@ -10,21 +10,17 @@ export function learn(
 ) {
   const rawSet: Card[] = sets[setName];
   let set = rawSet;
-  if (rawSet.length == 0) {
+  if (!rawSet) {
     console.error("You have nothing to learn. Add some cards first.");
     Deno.exit();
   }
-  for (let i = 6; i > 0; i--) {
-    const filtered = rawSet.filter((item) => item.phase == i);
-    if (filtered.length > 0) {
-      infoIfVerbose(
-        `Discarding cards of phase ${
-          filtered[0].phase + 1
-        } and replacing them with ${filtered.length} cards of a lower phase`
-      );
-      set = filtered;
-    }
-  }
+
+  let i = 1;
+  do {
+    set = rawSet.filter((item) => item.phase == i);
+    i++;
+  } while (set.length == 0);
+
   const incorrect: Card[] = [];
   const today = new Chrono(new Chrono().toISOString().split("T")[0]);
   const fullSet = set;
